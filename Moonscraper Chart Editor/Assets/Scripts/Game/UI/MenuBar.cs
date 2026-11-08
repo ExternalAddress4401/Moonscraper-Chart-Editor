@@ -64,13 +64,8 @@ public class MenuBar : UpdateableService {
 
     void Controls()
     {
-        if (MSChartEditorInput.GetInputDown(MSChartEditorInputActions.ToggleExtendedSustains))
-        {
-            ToggleExtendedSustains();
-            editor.globals.services.notificationBar.PushNotification("EXTENDED SUSTAINS TOGGLED " + Services.BoolToStrOnOff(Globals.gameSettings.extendedSustainsEnabled), 2, true);
-        }
 
-        else if (MSChartEditorInput.GetInputDown(MSChartEditorInputActions.ToggleMouseMode))
+        if (MSChartEditorInput.GetInputDown(MSChartEditorInputActions.ToggleMouseMode))
         {
             ToggleMouseLockMode();
             editor.globals.services.notificationBar.PushNotification("KEYS MODE TOGGLED " + Services.BoolToStrOnOff(Globals.gameSettings.keysModeEnabled), 2, true);
@@ -87,12 +82,6 @@ public class MenuBar : UpdateableService {
     {
         editor.services.SetKeysMode(!Globals.gameSettings.keysModeEnabled);
         Debug.Log("Keys mode toggled " + Globals.gameSettings.keysModeEnabled);
-    }
-
-    public void ToggleExtendedSustains()
-    {
-        Globals.gameSettings.extendedSustainsEnabled.value = !Globals.gameSettings.extendedSustainsEnabled;
-        Debug.Log("Extended sustains toggled " + Globals.gameSettings.extendedSustainsEnabled);
     }
 
     public void ToggleMetronome()

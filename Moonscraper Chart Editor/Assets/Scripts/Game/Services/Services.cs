@@ -119,12 +119,6 @@ public class Services : MonoBehaviour
         Debug.Log("Keys mode toggled " + Globals.gameSettings.keysModeEnabled);
     }
 
-    public void ToggleExtendedSustains()
-    {
-        Globals.gameSettings.extendedSustainsEnabled.value = !Globals.gameSettings.extendedSustainsEnabled;
-        Debug.Log("Extended sustains toggled " + Globals.gameSettings.extendedSustainsEnabled);
-    }
-
     public void ToggleMetronome()
     {
         Globals.gameSettings.metronomeActive = !Globals.gameSettings.metronomeActive;

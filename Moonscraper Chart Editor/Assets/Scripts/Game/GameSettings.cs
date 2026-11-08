@@ -301,7 +301,7 @@ public class GameSettings
     public GameSettings()
     {
         slowdownPitchCorrectionEnabled = new BoolSaveSetting(SECTION_NAME_SETTINGS, "Slowdown Pitch Correction Enabled", false);
-        extendedSustainsEnabled = new BoolSaveSetting(SECTION_NAME_SETTINGS, "Extended sustains", false);
+        extendedSustainsEnabled = new BoolSaveSetting(SECTION_NAME_SETTINGS, "Extended sustains", true);
         openChordsEnabled = new BoolSaveSetting(SECTION_NAME_SETTINGS, "Open Chords", false);
         tapOpensEnabled = new BoolSaveSetting(SECTION_NAME_SETTINGS, "Tap Opens", false);
         sustainGapEnabled = new BoolSaveSetting(SECTION_NAME_SETTINGS, "Sustain Gap", false);
