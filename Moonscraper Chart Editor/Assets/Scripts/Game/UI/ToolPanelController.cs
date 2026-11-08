@@ -9,7 +9,6 @@ public class ToolPanelController : MonoBehaviour {
     ChartEditor editor;
     public Toggle viewModeToggle;
     public KeysNotePlacementModePanelController keysModePanel;
-    public MouseNoteTypePanelController mouseModePanel;
 
     [SerializeField]
     Button cursorSelect;
@@ -57,7 +56,6 @@ public class ToolPanelController : MonoBehaviour {
         }
 
         keysModePanel.gameObject.SetActive(editor.toolManager.currentToolId == EditorObjectToolManager.ToolID.Note && Globals.gameSettings.keysModeEnabled);
-        mouseModePanel.gameObject.SetActive(editor.toolManager.currentToolId == EditorObjectToolManager.ToolID.Note && !Globals.gameSettings.keysModeEnabled);
 
         Shortcuts();
     }
