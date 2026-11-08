@@ -4,7 +4,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using MoonscraperChartEditor.Song;
-using System.Text;
 
 public class NotePropertiesPanelController : PropertiesPanelController {
     public Note currentNote { get { return (Note)currentSongObject; } set { currentSongObject = value; } }
@@ -12,8 +11,6 @@ public class NotePropertiesPanelController : PropertiesPanelController {
     public Text sustainText;
     public Text fretText;
     
-    public Toggle tapToggle;
-    public Toggle forcedToggle;
     public Toggle cymbalToggle;
     public Toggle doubleKickToggle;
     public Toggle accentToggle;
@@ -140,8 +137,6 @@ public class NotePropertiesPanelController : PropertiesPanelController {
             Debug.LogError("No note loaded into note inspector");
         }
 
-        forcedToggle.isOn = (flags & Note.Flags.Forced) != 0;
-        tapToggle.isOn = (flags & Note.Flags.Tap) != 0;
         cymbalToggle.isOn = (flags & Note.Flags.ProDrums_Cymbal) != 0;
         doubleKickToggle.isOn = (flags & Note.Flags.DoubleKick) != 0;
         accentToggle.isOn = (flags & Note.Flags.ProDrums_Accent) != 0;
@@ -156,54 +151,31 @@ public class NotePropertiesPanelController : PropertiesPanelController {
         bool drumsMode = Globals.drumMode;
         bool proDrumsMode = drumsMode && Globals.gameSettings.drumsModeOptions == GameSettings.DrumModeOptions.ProDrums;
 
-        forcedToggle.gameObject.SetActive(!drumsMode);
-        tapToggle.gameObject.SetActive(!drumsMode);
         cymbalToggle.gameObject.SetActive(proDrumsMode);
         doubleKickToggle.gameObject.SetActive(proDrumsMode);
         accentToggle.gameObject.SetActive(proDrumsMode);
         ghostToggle.gameObject.SetActive(proDrumsMode);
 
-        if (!drumsMode)
+        if (IsInNoteTool() && noteToolObject.activeSelf)
         {
-            if (IsInNoteTool() && (noteToolObject.activeSelf || Globals.gameSettings.keysModeEnabled))
-            {
-                forcedToggle.interactable = noteToolController.forcedInteractable;
-                tapToggle.interactable = noteToolController.tapInteractable;
-            }
-            else if (!IsInNoteTool())
-            {
-                forcedToggle.interactable = !(currentNote.cannotBeForced && !Globals.gameSettings.keysModeEnabled);
-                tapToggle.interactable = (currentNote.IsOpenNote() && Globals.gameSettings.tapOpensEnabled) || !currentNote.IsOpenNote();
-            }
-            else
-            {
-                forcedToggle.interactable = true;
-                tapToggle.interactable = true;
-            }
+            cymbalToggle.interactable = noteToolController.cymbalInteractable;
+            doubleKickToggle.interactable = noteToolController.doubleKickInteractable;
+            accentToggle.interactable = noteToolController.accentInteractable;
+            ghostToggle.interactable = noteToolController.ghostInteractable;
+        }
+        else if (!IsInNoteTool())
+        {
+            cymbalToggle.interactable = NoteFunctions.AllowedToBeCymbal(currentNote);
+            doubleKickToggle.interactable = NoteFunctions.AllowedToBeDoubleKick(currentNote, editor.currentDifficulty);
+            accentToggle.interactable = NoteFunctions.AllowedToBeAccent(currentNote);
+            ghostToggle.interactable = NoteFunctions.AllowedToBeGhost(currentNote);
         }
         else
         {
-            if (IsInNoteTool() && noteToolObject.activeSelf)
-            {
-                cymbalToggle.interactable = noteToolController.cymbalInteractable;
-                doubleKickToggle.interactable = noteToolController.doubleKickInteractable;
-                accentToggle.interactable = noteToolController.accentInteractable;
-                ghostToggle.interactable = noteToolController.ghostInteractable;
-            }
-            else if (!IsInNoteTool())
-            {
-                cymbalToggle.interactable = NoteFunctions.AllowedToBeCymbal(currentNote);
-                doubleKickToggle.interactable = NoteFunctions.AllowedToBeDoubleKick(currentNote, editor.currentDifficulty);
-                accentToggle.interactable = NoteFunctions.AllowedToBeAccent(currentNote);
-                ghostToggle.interactable = NoteFunctions.AllowedToBeGhost(currentNote);
-            }
-            else
-            {
-                cymbalToggle.interactable = true;
-                doubleKickToggle.interactable = true;
-                accentToggle.interactable = true;
-                ghostToggle.interactable = true;
-            }
+            cymbalToggle.interactable = true;
+            doubleKickToggle.interactable = true;
+            accentToggle.interactable = true;
+            ghostToggle.interactable = true;
         }
     }
 
@@ -214,18 +186,6 @@ public class NotePropertiesPanelController : PropertiesPanelController {
 
     void Controls()
     {
-        if (MSChartEditorInput.GetInputDown(MSChartEditorInputActions.ToggleNoteTap) && ToggleIsValid(tapToggle))
-        {
-            Debug.Log("ToggleNoteTap");
-            tapToggle.isOn = !tapToggle.isOn;
-        }
-
-        if (MSChartEditorInput.GetInputDown(MSChartEditorInputActions.ToggleNoteForced) && ToggleIsValid(forcedToggle))
-        {
-            Debug.Log("ToggleNoteForced");
-            forcedToggle.isOn = !forcedToggle.isOn;
-        }
-
         if (MSChartEditorInput.GetInputDown(MSChartEditorInputActions.ToggleNoteCymbal) && ToggleIsValid(cymbalToggle))
         {
             Debug.Log("ToggleNoteCymbal");
@@ -254,18 +214,6 @@ public class NotePropertiesPanelController : PropertiesPanelController {
     new void OnDisable()
     {
         currentNote = null;
-    }
-	
-    public void setTap()
-    {
-        // A note can only be forced or a tap, not both
-        OnNoteFlagToggleChanged(tapToggle, Note.Flags.Tap, Note.Flags.Forced);
-    }
-
-    public void setForced()
-    {
-        // A note can only be forced or a tap, not both
-        OnNoteFlagToggleChanged(forcedToggle, Note.Flags.Forced, Note.Flags.Tap);
     }
 
     public void setCymbal()
